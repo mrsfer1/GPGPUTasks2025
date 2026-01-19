@@ -16,4 +16,20 @@ __kernel void sum_03_local_memory_atomic_per_workgroup(__global const uint* a,
     // barrier(CLK_LOCAL_MEM_FENCE);
 
     // TODO
+    const unsigned int global_index = get_global_id(0);
+    const unsigned int local_index = get_local_id(0);
+    __local unsigned int local_data[GROUP_SIZE];
+
+    if (global_index < n){
+        local_data[local_index] = a[global_index];
+    } else {
+        local_data[local_index] = 0;
+    }
+    barrier(CLK_LOCAL_MEM_FENCE);
+    if (local_index == 0){
+        for (int i = 1; i < GROUP_SIZE; ++i){
+            local_data[0] += local_data[i];
+        }
+        atomic_add(sum, local_data[0]);
+    }
 }
