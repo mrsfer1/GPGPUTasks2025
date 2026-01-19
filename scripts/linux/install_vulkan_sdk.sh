@@ -67,7 +67,7 @@ make -j$njobs install
 cd ../..
 rm -rf Vulkan-Loader-${vulkan_loader_version}
 
-mkdir ${install_prefix}/include/vma
+mkdir -p ${install_prefix}/include/vma
 mv vk_mem_alloc.h ${install_prefix}/include/vma/vk_mem_alloc.h
 
 echo "Installing glslc shaders compiler"

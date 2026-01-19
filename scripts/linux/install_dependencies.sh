@@ -16,10 +16,10 @@ echo "Downloading sources"
 wget https://github.com/google/googletest/archive/refs/tags/release-${googletest_version}.zip
 
 echo "Installing googletest"
-unzip release-${googletest_version}.zip
+unzip -o release-${googletest_version}.zip
 rm release-${googletest_version}.zip
 pushd googletest-release-${googletest_version}
-mkdir releasebuild
+mkdir -p releasebuild
 cd releasebuild
 cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=${install_prefix} ..
 make -j${njobs} install
