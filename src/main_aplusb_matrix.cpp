@@ -61,7 +61,9 @@ void run(int argc, char** argv)
 
     {
         std::cout << "Running BAD matrix kernel..." << std::endl;
-
+        unsigned int new_width = (width + 256 - 1) / 256 * 256;
+        unsigned int new_height = (height + 256 - 1) / 256 * 256;
+        gpu::WorkSize workSize(256, 1, new_width, new_height);
         // Запускаем кернел (несколько раз и с замером времени выполнения)
         std::vector<double> times;
         for (int iter = 0; iter < 10; ++iter) {
@@ -70,7 +72,9 @@ void run(int argc, char** argv)
             // Настраиваем размер рабочего пространства (n) и размер рабочих групп в этом рабочем пространстве (GROUP_SIZE=256)
             // Обратите внимание что сейчас указана рабочая группа размера 1х1 в рабочем пространстве width x height, это не то что вы хотите
             // TODO И в плохом и в хорошем кернеле рабочая группа обязана состоять из 256 work-items
-            gpu::WorkSize workSize(256, 1, width, height);
+
+            //сделал за циклом чтобы не пересоздавать WorkSize
+
 
             // Запускаем кернел, с указанием размера рабочего пространства и передачей всех аргументов
             // Если хотите - можете удалить ветвление здесь и оставить только тот код который соответствует вашему выбору API
@@ -97,6 +101,11 @@ void run(int argc, char** argv)
         std::cout << "Running GOOD matrix kernel..." << std::endl;
 
         // Запускаем кернел (несколько раз и с замером времени выполнения)
+        const unsigned int TILE = 16;
+        unsigned int new_width = (width + TILE - 1) / TILE * TILE;
+        unsigned int new_height = (height + TILE - 1) / TILE * TILE;
+        gpu::WorkSize workSize(TILE, TILE, new_width, new_height);
+
         std::vector<double> times;
         for (int iter = 0; iter < 10; ++iter) {
             timer t;
@@ -104,7 +113,8 @@ void run(int argc, char** argv)
             // Настраиваем размер рабочего пространства (n) и размер рабочих групп в этом рабочем пространстве (GROUP_SIZE=256)
             // Обратите внимание что сейчас указана рабочая группа размера 1х1 в рабочем пространстве width x height, это не то что вы хотите
             // TODO И в плохом и в хорошем кернеле рабочая группа обязана состоять из 256 work-items
-            gpu::WorkSize workSize(16, 16, width, height);
+
+            //сделал за циклом чтобы не пересоздавать WorkSize
 
             // Запускаем кернел, с указанием размера рабочего пространства и передачей всех аргументов
             // Если хотите - можете удалить ветвление здесь и оставить только тот код который соответствует вашему выбору API
