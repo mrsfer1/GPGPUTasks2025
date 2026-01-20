@@ -40,7 +40,7 @@ void run(int argc, char** argv)
 
     FastRandom r;
 
-    int n = 100*1000*1000; // TODO при отладке используйте минимальное n (например n=5 или n=10) при котором воспроизводится бага
+    int n = 100 * 1000 * 1000; // TODO при отладке используйте минимальное n (например n=5 или n=10) при котором воспроизводится бага
     int min_value = 1; // это сделано для упрощения, чтобы существовало очевидное -INFINITY значение
     int max_value = std::numeric_limits<int>::max() - 1; // TODO при отладке используйте минимальное max_value (например max_value=8) при котором воспроизводится бага
     std::vector<unsigned int> as(n, 0);
@@ -98,8 +98,26 @@ void run(int argc, char** argv)
         // Запускаем кернел, с указанием размера рабочего пространства и передачей всех аргументов
         // Если хотите - можете удалить ветвление здесь и оставить только тот код который соответствует вашему выбору API
         if (context.type() == gpu::Context::TypeOpenCL) {
+            gpu::WorkSize worksize(GROUP_SIZE, n);
             // TODO
-            throw std::runtime_error(CODE_IS_NOT_IMPLEMENTED);
+            buffer1_gpu.writeN(as.data(), n);
+            int k;
+            int temp = 0;
+            for (int i = 2; i < n; i *= 2) {
+                if (temp % 2 == 0){
+                    ocl_mergeSort.exec(worksize, buffer1_gpu, buffer2_gpu, i, n);
+                } else {
+                    ocl_mergeSort.exec(worksize, buffer2_gpu, buffer1_gpu, i, n);
+                }
+                k = i;
+                temp++;
+            }
+            if (temp % 2 == 0){
+                ocl_mergeSort.exec(worksize, buffer1_gpu, buffer_output_gpu, 2 * k, n);
+            } else {
+                ocl_mergeSort.exec(worksize, buffer2_gpu, buffer_output_gpu, 2 * k, n);
+            }
+            // throw std::runtime_error(CODE_IS_NOT_IMPLEMENTED);
         } else if (context.type() == gpu::Context::TypeCUDA) {
             // TODO
             throw std::runtime_error(CODE_IS_NOT_IMPLEMENTED);
