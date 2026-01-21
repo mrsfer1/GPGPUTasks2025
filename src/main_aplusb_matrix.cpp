@@ -86,6 +86,8 @@ void run(int argc, char** argv)
 
         // TODO Удалите этот rassert - вычислите достигнутую эффективную пропускную способность видеопамяти
         // rassert(false, 54623414231);
+        std::cout << "A + b (bad) median effective memory bandwidth: " << 3 * (width * height) * sizeof(unsigned int) / 1024.0 / 1024.0 / 1024.0 / stats::median(times) << " GB/s" << std::endl;
+
 
         // TODO Считываем результат по PCI-E шине: GPU VRAM -> CPU RAM
         std::vector<unsigned int> cs(width * height, 0);
@@ -127,7 +129,7 @@ void run(int argc, char** argv)
         // TODO Удалите этот rassert - вычислите достигнутую эффективную пропускную способность видеопамяти
         // rassert(false, 54623414231);
 
-        std::cout << "effective memory bandwidth: " << 3 * (width * height) * sizeof(unsigned int) / 1024.0 / 1024.0 / 1024.0 << " GB/s" << std::endl;
+        std::cout << "A + b (good) median effective memory bandwidth: " << 3 * (width * height) * sizeof(unsigned int) / 1024.0 / 1024.0 / 1024.0 / stats::median(times) << " GB/s" << std::endl;
 
         // TODO Считываем результат по PCI-E шине: GPU VRAM -> CPU RAM
         std::vector<unsigned int> cs(width * height, 0);
