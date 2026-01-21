@@ -85,7 +85,7 @@ void run(int argc, char** argv)
 
     }
     
-    std::cout << "PCI-E median bandwidth - " << (n * sizeof(unsigned int) / 1024.0 / 1024.0 / 1024.0) << " GB/s" << std::endl;
+    std::cout << "PCI-E median bandwidth - " << (n * sizeof(unsigned int) / 1024.0 / 1024.0 / 1024.0) / stats::median(time) << " GB/s" << std::endl;
 
     std::vector<std::string> algorithm_names = {
         "CPU",
